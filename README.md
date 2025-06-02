@@ -226,6 +226,40 @@ npm run dev
 
 Visit `http://localhost:5175` to see the interactive demo.
 
+### Using Real API Credentials in Development
+
+To test with real Voltage API credentials instead of mock data:
+
+1. **Copy the environment template:**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Fill in your real Voltage API credentials in `.env`:**
+
+   ```bash
+   # Your actual Voltage API credentials
+   VITE_VOLTAGE_API_KEY=vltg_your_actual_api_key_here
+   VITE_VOLTAGE_ORGANIZATION_ID=your_actual_org_id
+   VITE_VOLTAGE_ENVIRONMENT_ID=your_actual_env_id
+   VITE_VOLTAGE_WALLET_ID=your_actual_wallet_id
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+The demo will automatically detect and use your real API credentials, allowing you to:
+
+- ✅ Create real payment requests
+- ✅ Generate actual Lightning invoices and Bitcoin addresses
+- ✅ Test real payment status polling
+- ✅ Receive actual Bitcoin payments (be careful!)
+
+**⚠️ Security Note**: The `.env` file is ignored by git and should never be committed. Only use testnet/regtest credentials for development.
+
 ### Building
 
 ```bash

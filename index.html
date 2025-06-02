@@ -178,23 +178,53 @@ await payment.mount('#payment-container');</code></pre>
 
       // For demo purposes, we'll use mock credentials
       // In production, you'd provide real API credentials
+      // For development, you can create a .env file with real credentials
       const DEMO_CONFIG = {
-        apiKey: "demo-api-key-replace-with-real-key",
-        organizationId: "demo-org-id", // Required for real API
-        environmentId: "demo-env-id", // Required for real API
+        apiKey:
+          import.meta.env.VITE_VOLTAGE_API_KEY ||
+          "demo-api-key-replace-with-real-key",
+        organizationId:
+          import.meta.env.VITE_VOLTAGE_ORGANIZATION_ID || "demo-org-id",
+        environmentId:
+          import.meta.env.VITE_VOLTAGE_ENVIRONMENT_ID || "demo-env-id",
+        walletId: import.meta.env.VITE_VOLTAGE_WALLET_ID || "demo-wallet-id",
+        baseUrl:
+          import.meta.env.VITE_VOLTAGE_BASE_URL || "https://voltageapi.com/v1",
+        timeout: parseInt(import.meta.env.VITE_VOLTAGE_TIMEOUT || "30000"),
       };
 
+      const isUsingRealAPI =
+        import.meta.env.VITE_VOLTAGE_API_KEY &&
+        import.meta.env.VITE_VOLTAGE_ORGANIZATION_ID &&
+        import.meta.env.VITE_VOLTAGE_ENVIRONMENT_ID &&
+        import.meta.env.VITE_VOLTAGE_WALLET_ID;
+
       logEvent("ready", "🚀 Starting Voltage Payment Component Demo");
-      logEvent(
-        "ready",
-        "⚠️  Using demo credentials - replace with real API keys for production"
-      );
+
+      if (isUsingRealAPI) {
+        logEvent(
+          "ready",
+          "✅ Using REAL Voltage API credentials from .env file"
+        );
+        logEvent("ready", `🔌 API: ${DEMO_CONFIG.baseUrl}`);
+        logEvent("ready", `🏢 Org: ${DEMO_CONFIG.organizationId}`);
+        logEvent("ready", `🌍 Env: ${DEMO_CONFIG.environmentId}`);
+      } else {
+        logEvent(
+          "ready",
+          "⚠️  Using demo credentials - replace with real API keys for production"
+        );
+        logEvent(
+          "ready",
+          "💡 Create a .env file with VITE_VOLTAGE_* variables to test with real API"
+        );
+      }
 
       // Basic payment
       try {
         const basicPayment = VoltagePayments.create({
           apiKey: DEMO_CONFIG.apiKey,
-          walletId: "demo-wallet-id",
+          walletId: DEMO_CONFIG.walletId,
           organizationId: DEMO_CONFIG.organizationId,
           environmentId: DEMO_CONFIG.environmentId,
           amount: 100000, // 100k msats
@@ -223,7 +253,7 @@ await payment.mount('#payment-container');</code></pre>
       try {
         const customPayment = VoltagePayments.create({
           apiKey: DEMO_CONFIG.apiKey,
-          walletId: "demo-wallet-id",
+          walletId: DEMO_CONFIG.walletId,
           organizationId: DEMO_CONFIG.organizationId,
           environmentId: DEMO_CONFIG.environmentId,
           amount: 250000, // 250k msats
@@ -260,7 +290,7 @@ await payment.mount('#payment-container');</code></pre>
       try {
         const anyAmountPayment = VoltagePayments.create({
           apiKey: DEMO_CONFIG.apiKey,
-          walletId: "demo-wallet-id",
+          walletId: DEMO_CONFIG.walletId,
           organizationId: DEMO_CONFIG.organizationId,
           environmentId: DEMO_CONFIG.environmentId,
           amount: null, // Any amount
