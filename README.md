@@ -1,238 +1,303 @@
 # Voltage Payment Component
 
-> ⚡ Lightweight, framework-agnostic Bitcoin payment components for web applications
+A lightweight, framework-agnostic Bitcoin payment component library for web applications.
 
-A drop-in payment component library that simplifies Bitcoin Lightning and on-chain payments, built on top of the [Voltage API SDK](https://github.com/LightningK0ala/voltage-api-sdk).
+## 🚀 Features
 
-## 🚀 Quick Start
+- **Drop-in Integration**: Simple script tag or npm package installation
+- **Framework Agnostic**: Works with any web framework (React, Vue, Angular, vanilla JS)
+- **Real-time Updates**: Live payment status with configurable polling
+- **Voltage API Integration**: Powered by the official Voltage API SDK
+- **Multiple Payment Types**: Lightning (Bolt11), On-chain, and BIP21 (unified)
+- **Customizable UI**: CSS custom properties for complete theming control
+- **TypeScript Support**: Full type definitions included
+- **Responsive Design**: Mobile-first responsive layout
 
-### CDN Usage (Coming Soon)
-```html
-<script src="https://cdn.voltage.com/components/v1/voltage-payments.js"></script>
-<div id="payment-container"></div>
-<script>
-  VoltagePayments.create({
-    apiKey: 'vltg_your_api_key',
-    walletId: 'your_wallet_id',
-    amount: 150000, // 150 sats
-    description: 'Coffee purchase'
-  }).mount('#payment-container');
-</script>
-```
+## 📦 Installation
 
-### NPM Usage (Coming Soon)
+### NPM Package
+
 ```bash
 npm install @voltage-payments/components
 ```
 
+### Script Tag (CDN)
+
+```html
+<script src="https://unpkg.com/@voltage-payments/components/dist/voltage-payments.umd.js"></script>
+```
+
+## 🔑 Voltage API Setup
+
+Before using the component, you'll need:
+
+1. **Voltage Account**: Sign up at [voltage.cloud](https://voltage.cloud)
+2. **API Key**: Generate an API key from your Voltage dashboard
+3. **Organization ID**: Your organization ID from the dashboard
+4. **Environment ID**: Your environment ID (e.g., production, staging)
+5. **Wallet ID**: The ID of the wallet you want to receive payments to
+
+## 🎯 Quick Start
+
+### ES Modules (Recommended)
+
 ```javascript
-import { VoltagePayments } from '@voltage-payments/components';
+import { VoltagePayments } from "@voltage-payments/components";
 
 const payment = VoltagePayments.create({
-  apiKey: 'vltg_your_api_key',
-  walletId: 'your_wallet_id',
-  amount: 150000,
-  description: 'Coffee purchase'
+  // Required: Voltage API credentials
+  apiKey: "your-voltage-api-key",
+  organizationId: "your-org-id",
+  environmentId: "your-env-id",
+  walletId: "your-wallet-id",
+
+  // Payment configuration
+  amount: 100000, // 100k millisats = 100 sats
+  paymentKind: "bip21", // 'bolt11', 'onchain', or 'bip21'
+  description: "Coffee purchase",
+
+  // Event handlers
+  onReady: (payment) => console.log("Payment ready:", payment),
+  onSuccess: (payment) => console.log("Payment completed!", payment),
+  onError: (error) => console.error("Payment failed:", error),
 });
 
-payment.mount('#payment-container');
+// Mount to DOM element
+await payment.mount("#payment-container");
 ```
 
-## 🛠 Development Setup
+### UMD (Script Tag)
 
-This project is currently in development. To run the development environment:
+```html
+<div id="payment-container"></div>
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+<script>
+  const payment = VoltagePayments.create({
+    apiKey: "your-voltage-api-key",
+    organizationId: "your-org-id",
+    environmentId: "your-env-id",
+    walletId: "your-wallet-id",
+    amount: 50000,
+    paymentKind: "bolt11",
+    description: "Lightning payment",
+  });
 
-### Setup
-```bash
-# Clone the repository
-git clone <repository-url>
-cd voltage-payment-component
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Open http://localhost:5173 in your browser
-```
-
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run test` - Run tests
-- `npm run lint` - Lint code
-- `npm run format` - Format code
-
-## 📋 Current Status
-
-### ✅ Completed (Phase 1 - MVP)
-- [x] Basic project structure with Svelte + TypeScript
-- [x] Core API design and type definitions
-- [x] Basic inline payment component (mock implementation)
-- [x] CSS custom properties for theming
-- [x] Development environment with live examples
-- [x] Component lifecycle management
-
-### 🔄 In Progress
-- [ ] Integration with voltage-api-sdk
-- [ ] QR code generation and display
-- [ ] Payment status polling
-- [ ] Real payment request creation
-
-### 📅 Upcoming (Phase 2)
-- [ ] Modal payment variant
-- [ ] Enhanced error handling
-- [ ] Copy-to-clipboard functionality
-- [ ] Mobile optimization
-- [ ] Accessibility improvements
-
-## 🏗 Architecture
-
-### Technology Stack
-- **Framework**: Svelte (compiles to vanilla JS)
-- **Language**: TypeScript
-- **Styling**: CSS-in-JS with CSS Custom Properties
-- **Build**: Vite + Rollup
-- **Testing**: Vitest + Playwright
-
-### Project Structure
-```
-src/
-├── lib/
-│   ├── VoltagePayments.ts           # Main factory class
-│   ├── components/
-│   │   ├── PaymentInline.svelte     # Inline payment component
-│   │   └── PaymentInlineComponent.ts # TypeScript wrapper
-│   └── types/
-│       └── index.ts                 # Type definitions
-├── main.ts                          # Library entry point
-└── test-setup.ts                    # Test configuration
-```
-
-## 🎨 Component Variants
-
-### Inline Payment (Available)
-```javascript
-VoltagePayments.create({
-  variant: 'inline', // default
-  apiKey: 'vltg_...',
-  walletId: 'wallet_...',
-  amount: 150000
-}).mount('#container');
-```
-
-### Modal Payment (Coming in Phase 2)
-```javascript
-VoltagePayments.create({
-  variant: 'modal',
-  apiKey: 'vltg_...',
-  walletId: 'wallet_...',
-  amount: 150000
-}).mount('#trigger-button');
-```
-
-### Payment Button (Coming in Phase 3)
-```javascript
-VoltagePayments.create({
-  variant: 'button',
-  apiKey: 'vltg_...',
-  walletId: 'wallet_...',
-  amount: 150000
-}).mount('#payment-button');
+  payment.mount("#payment-container");
+</script>
 ```
 
 ## 🎨 Customization
 
-### Appearance API
+### Appearance Options
+
 ```javascript
 VoltagePayments.create({
+  // ... API config
   appearance: {
-    primaryColor: '#f7931a',
-    backgroundColor: '#ffffff',
-    borderColor: '#e5e7eb',
-    borderRadius: '8px',
-    fontFamily: 'Inter, sans-serif',
-    textColor: '#1f2937',
-    secondaryTextColor: '#6b7280'
-  }
+    primaryColor: "#f7931a", // Bitcoin orange
+    backgroundColor: "#ffffff", // Component background
+    borderColor: "#e5e7eb", // Border color
+    borderRadius: "12px", // Border radius
+    fontFamily: "Inter, sans-serif", // Font family
+    textColor: "#1f2937", // Primary text color
+    secondaryTextColor: "#6b7280", // Secondary text color
+  },
 });
 ```
 
-### Themes
+### Payment Types
+
+#### Lightning (Bolt11)
+
 ```javascript
 VoltagePayments.create({
-  theme: 'dark' // 'light', 'dark', 'auto'
+  paymentKind: "bolt11",
+  amount: 100000, // Required for Lightning
+  // ... other config
 });
 ```
 
-## 📚 API Reference
+#### On-chain
 
-### PaymentOptions
-```typescript
-interface PaymentOptions {
-  // Required
-  apiKey: string;
-  walletId: string;
-
-  // Payment Configuration
-  amount?: number | null;
-  paymentKind?: 'bolt11' | 'onchain' | 'bip21';
-  description?: string;
-
-  // UI Configuration
-  variant?: 'inline' | 'modal' | 'button';
-  theme?: 'light' | 'dark' | 'auto';
-  appearance?: AppearanceConfig;
-
-  // Callbacks
-  onReady?: (payment: PaymentData) => void;
-  onSuccess?: (payment: PaymentData) => void;
-  onError?: (error: PaymentError) => void;
-  // ... more callbacks
-}
+```javascript
+VoltagePayments.create({
+  paymentKind: "onchain",
+  amount: 500000, // Optional for on-chain
+  // ... other config
+});
 ```
 
-### PaymentComponent Methods
-```typescript
-interface PaymentComponent {
-  mount(selector: string | HTMLElement): void;
-  unmount(): void;
-  destroy(): void;
-  updateOptions(options: Partial<PaymentOptions>): void;
-  getStatus(): PaymentStatus;
-  getPaymentData(): PaymentData | null;
-}
+#### BIP21 (Unified)
+
+```javascript
+VoltagePayments.create({
+  paymentKind: "bip21", // Provides both Lightning and on-chain options
+  amount: 250000,
+  // ... other config
+});
 ```
 
-## 🧪 Testing
+#### Any Amount
 
-The development environment includes interactive examples:
+```javascript
+VoltagePayments.create({
+  amount: null, // Allows user to specify amount
+  paymentKind: "bolt11",
+  // ... other config
+});
+```
 
-1. **Basic Payment**: Simple payment with default styling
-2. **Custom Payment**: Payment with custom appearance
-3. **Any Amount Payment**: Payment where user specifies amount
+## 📡 Event Handling
 
-Open `http://localhost:5173` after running `npm run dev` to test these examples.
+```javascript
+VoltagePayments.create({
+  // ... config
+  onReady: (payment) => {
+    // Payment request generated and ready for payment
+    console.log("Payment ID:", payment.id);
+    console.log("Payment Request:", payment.paymentRequest);
+  },
+
+  onQRGenerated: (qrData, paymentRequest, address) => {
+    // QR code data is ready
+    console.log("Scan this:", qrData);
+  },
+
+  onStatusChange: (status, payment) => {
+    // Payment status updated
+    console.log("New status:", status);
+  },
+
+  onSuccess: (payment) => {
+    // Payment completed successfully
+    showSuccessMessage("Payment received!");
+    redirectToThankYouPage();
+  },
+
+  onError: (error) => {
+    // Payment failed or error occurred
+    console.error("Error:", error.message);
+    showErrorMessage(error.message);
+  },
+
+  onExpired: (payment) => {
+    // Payment request expired
+    console.log("Payment expired, creating new one...");
+  },
+});
+```
+
+## ⚙️ Configuration Options
+
+### Polling Configuration
+
+```javascript
+VoltagePayments.create({
+  // ... other config
+  pollingConfig: {
+    maxAttempts: 100, // Maximum polling attempts
+    intervalMs: 5000, // Poll every 5 seconds
+    timeoutMs: 300000, // 5 minute timeout
+  },
+});
+```
+
+### UI Options
+
+```javascript
+VoltagePayments.create({
+  // ... other config
+  showQRCode: true, // Show/hide QR code (default: true)
+  showCopyButton: true, // Show/hide copy button (default: true)
+  theme: "auto", // 'light', 'dark', or 'auto'
+});
+```
+
+## 🛠️ Development
+
+### Local Development
+
+```bash
+git clone https://github.com/voltage/voltage-payment-component
+cd voltage-payment-component
+npm install
+npm run dev
+```
+
+Visit `http://localhost:5175` to see the interactive demo.
+
+### Building
+
+```bash
+npm run build        # Build library
+npm run type-check   # Type checking
+npm run test         # Run tests
+```
+
+## 📖 API Reference
+
+### VoltagePayments.create(options)
+
+Creates a new payment component instance.
+
+#### Options
+
+| Option           | Type                             | Required | Description                               |
+| ---------------- | -------------------------------- | -------- | ----------------------------------------- |
+| `apiKey`         | string                           | ✅       | Your Voltage API key                      |
+| `organizationId` | string                           | ✅       | Your Voltage organization ID              |
+| `environmentId`  | string                           | ✅       | Your Voltage environment ID               |
+| `walletId`       | string                           | ✅       | Target wallet ID for payments             |
+| `amount`         | number \| null                   | ❌       | Amount in millisats (null for any amount) |
+| `paymentKind`    | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')           |
+| `description`    | string                           | ❌       | Payment description                       |
+| `appearance`     | AppearanceConfig                 | ❌       | Visual customization options              |
+| `pollingConfig`  | PollingConfig                    | ❌       | Payment status polling configuration      |
+| `onReady`        | function                         | ❌       | Called when payment is ready              |
+| `onSuccess`      | function                         | ❌       | Called when payment succeeds              |
+| `onError`        | function                         | ❌       | Called when payment fails                 |
+| `onExpired`      | function                         | ❌       | Called when payment expires               |
+| `onStatusChange` | function                         | ❌       | Called when payment status changes        |
+| `onQRGenerated`  | function                         | ❌       | Called when QR code is generated          |
+
+### Payment Component Methods
+
+```javascript
+const payment = VoltagePayments.create({...});
+
+await payment.mount('#container');     // Mount to DOM element
+payment.unmount();                     // Unmount from DOM
+payment.destroy();                     // Clean up and destroy
+payment.updateOptions({...});          // Update configuration
+payment.getStatus();                   // Get current status
+payment.getPaymentData();              // Get payment data
+```
 
 ## 🤝 Contributing
 
-This project is in active development. Please see [PROJECT_PLAN.md](./PROJECT_PLAN.md) for detailed roadmap and implementation phases.
-
-### Development Workflow
-1. Make changes to components in `src/lib/`
-2. Test in development environment at `http://localhost:5173`
-3. Run tests: `npm run test`
-4. Build: `npm run build`
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License - see [LICENSE](./LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Documentation**: [voltage.cloud/docs](https://voltage.cloud/docs)
+- **API Reference**: [voltage.cloud/api](https://voltage.cloud/api)
+- **Issues**: [GitHub Issues](https://github.com/voltage/voltage-payment-component/issues)
+- **Discord**: [Voltage Community](https://discord.gg/voltage)
 
 ---
 
-**Note**: This library is currently in development (Phase 1). The API may change before the first stable release. 
+**Current Status**: ✅ Phase 1 Complete - Real Voltage API Integration
+
+**Next Steps**:
+
+- [ ] QR Code Generation
+- [ ] Enhanced Error Handling
+- [ ] Modal & Button Variants

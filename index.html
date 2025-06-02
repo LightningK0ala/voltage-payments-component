@@ -176,18 +176,41 @@ await payment.mount('#payment-container');</code></pre>
         eventLog.scrollTop = eventLog.scrollHeight;
       }
 
+      // For demo purposes, we'll use mock credentials
+      // In production, you'd provide real API credentials
+      const DEMO_CONFIG = {
+        apiKey: "demo-api-key-replace-with-real-key",
+        organizationId: "demo-org-id", // Required for real API
+        environmentId: "demo-env-id", // Required for real API
+      };
+
+      logEvent("ready", "🚀 Starting Voltage Payment Component Demo");
+      logEvent(
+        "ready",
+        "⚠️  Using demo credentials - replace with real API keys for production"
+      );
+
       // Basic payment
       try {
         const basicPayment = VoltagePayments.create({
-          apiKey: "demo-api-key",
+          apiKey: DEMO_CONFIG.apiKey,
           walletId: "demo-wallet-id",
+          organizationId: DEMO_CONFIG.organizationId,
+          environmentId: DEMO_CONFIG.environmentId,
           amount: 100000, // 100k msats
-          description: "Basic payment demo",
+          paymentKind: "bolt11",
+          description: "Basic Lightning payment demo",
           onReady: (payment) =>
-            logEvent("ready", "Basic payment ready", payment),
+            logEvent("ready", "⚡ Basic payment ready", payment),
           onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "QR code generated for basic payment"),
-          onError: (error) => logEvent("error", "Basic payment error", error),
+            logEvent("qr", "📱 QR code generated for basic payment"),
+          onStatusChange: (status, payment) =>
+            logEvent("ready", `Status changed to: ${status}`),
+          onSuccess: (payment) =>
+            logEvent("ready", "✅ Basic payment completed!", payment),
+          onError: (error) =>
+            logEvent("error", "❌ Basic payment error", error),
+          onExpired: (payment) => logEvent("error", "⏰ Basic payment expired"),
         });
 
         await basicPayment.mount("#payment-basic");
@@ -199,10 +222,13 @@ await payment.mount('#payment-container');</code></pre>
       // Custom styled payment
       try {
         const customPayment = VoltagePayments.create({
-          apiKey: "demo-api-key",
+          apiKey: DEMO_CONFIG.apiKey,
           walletId: "demo-wallet-id",
+          organizationId: DEMO_CONFIG.organizationId,
+          environmentId: DEMO_CONFIG.environmentId,
           amount: 250000, // 250k msats
-          description: "Custom styled payment",
+          paymentKind: "bip21",
+          description: "Custom styled BIP21 payment",
           appearance: {
             primaryColor: "#8b5cf6",
             backgroundColor: "#faf5ff",
@@ -211,10 +237,17 @@ await payment.mount('#payment-container');</code></pre>
             textColor: "#581c87",
           },
           onReady: (payment) =>
-            logEvent("ready", "Custom payment ready", payment),
+            logEvent("ready", "🎨 Custom payment ready", payment),
           onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "QR code generated for custom payment"),
-          onError: (error) => logEvent("error", "Custom payment error", error),
+            logEvent("qr", "📱 QR code generated for custom payment"),
+          onStatusChange: (status, payment) =>
+            logEvent("ready", `Custom payment status: ${status}`),
+          onSuccess: (payment) =>
+            logEvent("ready", "✅ Custom payment completed!", payment),
+          onError: (error) =>
+            logEvent("error", "❌ Custom payment error", error),
+          onExpired: (payment) =>
+            logEvent("error", "⏰ Custom payment expired"),
         });
 
         await customPayment.mount("#payment-custom");
@@ -226,21 +259,30 @@ await payment.mount('#payment-container');</code></pre>
       // Any amount payment
       try {
         const anyAmountPayment = VoltagePayments.create({
-          apiKey: "demo-api-key",
+          apiKey: DEMO_CONFIG.apiKey,
           walletId: "demo-wallet-id",
+          organizationId: DEMO_CONFIG.organizationId,
+          environmentId: DEMO_CONFIG.environmentId,
           amount: null, // Any amount
-          description: "Pay any amount",
+          paymentKind: "onchain",
+          description: "Pay any amount - On-chain",
           appearance: {
             primaryColor: "#059669",
             borderColor: "#10b981",
             borderRadius: "12px",
           },
           onReady: (payment) =>
-            logEvent("ready", "Any-amount payment ready", payment),
+            logEvent("ready", "🪙 Any-amount payment ready", payment),
           onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "QR code generated for any-amount payment"),
+            logEvent("qr", "📱 QR code generated for any-amount payment"),
+          onStatusChange: (status, payment) =>
+            logEvent("ready", `Any-amount status: ${status}`),
+          onSuccess: (payment) =>
+            logEvent("ready", "✅ Any-amount payment completed!", payment),
           onError: (error) =>
-            logEvent("error", "Any-amount payment error", error),
+            logEvent("error", "❌ Any-amount payment error", error),
+          onExpired: (payment) =>
+            logEvent("error", "⏰ Any-amount payment expired"),
         });
 
         await anyAmountPayment.mount("#payment-any-amount");
