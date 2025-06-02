@@ -1,7 +1,7 @@
 {
-  "name": "@voltage-payments/components",
+  "name": "voltage-payments-component",
   "version": "0.1.0",
-  "description": "Lightweight, framework-agnostic Bitcoin payment components for web applications",
+  "description": "Lightweight, framework-agnostic Bitcoin payment components for web applications using Voltage Payments",
   "type": "module",
   "main": "dist/voltage-payments.js",
   "module": "dist/voltage-payments.esm.js",
