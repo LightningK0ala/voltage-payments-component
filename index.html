@@ -622,7 +622,10 @@ await payment.mount('#payment-container');</code></pre>
           onReady: (payment) =>
             logEvent("ready", "⚡ Basic payment ready", payment),
           onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "📱 QR code generated for basic payment"),
+            logEvent("qr", "📱 QR code generated for basic payment", {
+              qrLength: qrData.length,
+              type: paymentRequest ? "bolt11" : "address",
+            }),
           onStatusChange: (status, payment) =>
             logEvent("ready", `Status changed to: ${status}`),
           onSuccess: (payment) =>
@@ -657,8 +660,13 @@ await payment.mount('#payment-container');</code></pre>
           },
           onReady: (payment) =>
             logEvent("ready", "🎨 Custom payment ready", payment),
-          onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "📱 QR code generated for custom payment"),
+          onQRGenerated: (qrData, paymentRequest, address) =>
+            logEvent("qr", "📱 QR code generated for custom payment", {
+              qrLength: qrData.length,
+              type: "bip21",
+              hasLightning: !!paymentRequest,
+              hasOnchain: !!address,
+            }),
           onStatusChange: (status, payment) =>
             logEvent("ready", `Custom payment status: ${status}`),
           onSuccess: (payment) =>
@@ -692,8 +700,12 @@ await payment.mount('#payment-container');</code></pre>
           },
           onReady: (payment) =>
             logEvent("ready", "🪙 On-chain payment ready", payment),
-          onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "📱 QR code generated for on-chain payment"),
+          onQRGenerated: (qrData, paymentRequest, address) =>
+            logEvent("qr", "📱 QR code generated for on-chain payment", {
+              qrLength: qrData.length,
+              type: "onchain",
+              address: address?.slice(0, 20) + "...",
+            }),
           onStatusChange: (status, payment) =>
             logEvent("ready", `On-chain status: ${status}`),
           onSuccess: (payment) =>
@@ -728,7 +740,11 @@ await payment.mount('#payment-container');</code></pre>
           onReady: (payment) =>
             logEvent("ready", "⚡ Lightning amountless ready", payment),
           onQRGenerated: (qrData, paymentRequest) =>
-            logEvent("qr", "📱 QR code generated for Lightning amountless"),
+            logEvent("qr", "📱 QR code generated for Lightning amountless", {
+              qrLength: qrData.length,
+              type: "bolt11_amountless",
+              invoice: paymentRequest?.slice(0, 30) + "...",
+            }),
           onStatusChange: (status, payment) =>
             logEvent("ready", `Lightning amountless status: ${status}`),
           onSuccess: (payment) =>
