@@ -20,6 +20,11 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*.ts", "src/**/*.svelte", "src/app.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "src/app.d.ts",
+    "src/vite-env.d.ts"
+  ],
   "exclude": ["node_modules", "dist", "tests"]
 }
