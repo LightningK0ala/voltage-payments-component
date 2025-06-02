@@ -112,7 +112,14 @@ VoltagePayments.create({
 ```javascript
 VoltagePayments.create({
   paymentKind: "bolt11",
-  amount: 100000, // Required for Lightning
+  amount: 100000, // Required for fixed amount
+  // ... other config
+});
+
+// Amountless Lightning invoice (payer specifies amount)
+VoltagePayments.create({
+  paymentKind: "bolt11",
+  amount: null, // Omit amount entirely for amountless invoices
   // ... other config
 });
 ```
@@ -122,7 +129,7 @@ VoltagePayments.create({
 ```javascript
 VoltagePayments.create({
   paymentKind: "onchain",
-  amount: 500000, // Optional for on-chain
+  amount: 54600000, // Must be >= 1 msat (546 sats = dust limit recommended)
   // ... other config
 });
 ```
@@ -132,20 +139,16 @@ VoltagePayments.create({
 ```javascript
 VoltagePayments.create({
   paymentKind: "bip21", // Provides both Lightning and on-chain options
-  amount: 250000,
+  amount: 250000, // Must be >= 1 msat for on-chain compatibility
   // ... other config
 });
 ```
 
-#### Any Amount
+**⚠️ Amount Requirements:**
 
-```javascript
-VoltagePayments.create({
-  amount: null, // Allows user to specify amount
-  paymentKind: "bolt11",
-  // ... other config
-});
-```
+- **Lightning (bolt11)**: Use `amount: null` for amountless invoices (payer specifies amount), or specify `amount > 0` for fixed amounts
+- **On-chain**: Must use `amount >= 1` (recommend 546 sats = 54,600,000 msats as dust limit)
+- **BIP21**: Must use `amount >= 1` for on-chain compatibility
 
 ## 📡 Event Handling
 
@@ -276,23 +279,23 @@ Creates a new payment component instance.
 
 #### Options
 
-| Option           | Type                             | Required | Description                               |
-| ---------------- | -------------------------------- | -------- | ----------------------------------------- |
-| `apiKey`         | string                           | ✅       | Your Voltage API key                      |
-| `organizationId` | string                           | ✅       | Your Voltage organization ID              |
-| `environmentId`  | string                           | ✅       | Your Voltage environment ID               |
-| `walletId`       | string                           | ✅       | Target wallet ID for payments             |
-| `amount`         | number \| null                   | ❌       | Amount in millisats (null for any amount) |
-| `paymentKind`    | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')           |
-| `description`    | string                           | ❌       | Payment description                       |
-| `appearance`     | AppearanceConfig                 | ❌       | Visual customization options              |
-| `pollingConfig`  | PollingConfig                    | ❌       | Payment status polling configuration      |
-| `onReady`        | function                         | ❌       | Called when payment is ready              |
-| `onSuccess`      | function                         | ❌       | Called when payment succeeds              |
-| `onError`        | function                         | ❌       | Called when payment fails                 |
-| `onExpired`      | function                         | ❌       | Called when payment expires               |
-| `onStatusChange` | function                         | ❌       | Called when payment status changes        |
-| `onQRGenerated`  | function                         | ❌       | Called when QR code is generated          |
+| Option           | Type                             | Required | Description                                |
+| ---------------- | -------------------------------- | -------- | ------------------------------------------ |
+| `apiKey`         | string                           | ✅       | Your Voltage API key                       |
+| `organizationId` | string                           | ✅       | Your Voltage organization ID               |
+| `environmentId`  | string                           | ✅       | Your Voltage environment ID                |
+| `walletId`       | string                           | ✅       | Target wallet ID for payments              |
+| `amount`         | number                           | ❌       | Amount in millisats (use 0 for any amount) |
+| `paymentKind`    | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')            |
+| `description`    | string                           | ❌       | Payment description                        |
+| `appearance`     | AppearanceConfig                 | ❌       | Visual customization options               |
+| `pollingConfig`  | PollingConfig                    | ❌       | Payment status polling configuration       |
+| `onReady`        | function                         | ❌       | Called when payment is ready               |
+| `onSuccess`      | function                         | ❌       | Called when payment succeeds               |
+| `onError`        | function                         | ❌       | Called when payment fails                  |
+| `onExpired`      | function                         | ❌       | Called when payment expires                |
+| `onStatusChange` | function                         | ❌       | Called when payment status changes         |
+| `onQRGenerated`  | function                         | ❌       | Called when QR code is generated           |
 
 ### Payment Component Methods
 

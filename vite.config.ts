@@ -11,14 +11,14 @@ export default defineConfig({
         target: "https://voltageapi.com/v1",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/voltage/, ""),
-        configure: (proxy, options) => {
-          proxy.on("error", (err, req, res) => {
-            console.log("Voltage API proxy error:", err);
-          });
-          proxy.on("proxyReq", (proxyReq, req, res) => {
-            console.log("Proxying Voltage API request:", req.method, req.url);
-          });
-        },
+        // configure: (proxy, options) => {
+        //   proxy.on("error", (err, req, res) => {
+        //     console.log("Voltage API proxy error:", err);
+        //   });
+        //   proxy.on("proxyReq", (proxyReq, req, res) => {
+        //     console.log("Proxying Voltage API request:", req.method, req.url);
+        //   });
+        // },
       },
     },
   },
