@@ -4,6 +4,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 export default defineConfig({
   plugins: [svelte({ emitCss: false })],
   server: {
+    port: 3210, // Run on port 3210
     strictPort: true, // Fail if port is already in use instead of trying another
     proxy: {
       // Proxy Voltage API calls to avoid CORS issues
