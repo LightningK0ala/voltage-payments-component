@@ -20,13 +20,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.svelte"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tests"
-  ]
-} 
+  "include": ["src/**/*.ts", "src/**/*.svelte", "src/app.d.ts"],
+  "exclude": ["node_modules", "dist", "tests"]
+}

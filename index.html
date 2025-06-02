@@ -1,178 +1,253 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voltage Payment Component - Development</title>
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-      line-height: 1.6;
-      background: #f9fafb;
-    }
-    
-    .demo-section {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    h1, h2 {
-      color: #1f2937;
-    }
-    
-    .demo-container {
-      border: 1px dashed #d1d5db;
-      border-radius: 8px;
-      padding: 1rem;
-      margin: 1rem 0;
-    }
-    
-    button {
-      background: #f7931a;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      margin: 0.5rem 0;
-    }
-    
-    button:hover {
-      opacity: 0.9;
-    }
-    
-    pre {
-      background: #f3f4f6;
-      padding: 1rem;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-size: 0.875rem;
-    }
-  </style>
-</head>
-<body>
-  <h1>⚡ Voltage Payment Component</h1>
-  <p>Development environment for testing the Voltage Payment Component library.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voltage Payment Component Demo</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f8fafc;
+      }
 
-  <div class="demo-section">
-    <h2>Basic Inline Payment</h2>
-    <p>A simple payment component with default settings:</p>
-    
-    <div class="demo-container" id="payment-basic"></div>
-    
-    <button onclick="createBasicPayment()">Create Basic Payment</button>
-    
-    <pre><code>VoltagePayments.create({
-  apiKey: "vltg_demo_key",
-  walletId: "demo_wallet_id",
-  amount: 150000, // 150 sats
-  description: "Coffee purchase"
-}).mount("#payment-basic");</code></pre>
-  </div>
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
 
-  <div class="demo-section">
-    <h2>Customized Payment</h2>
-    <p>Payment component with custom appearance:</p>
-    
-    <div class="demo-container" id="payment-custom"></div>
-    
-    <button onclick="createCustomPayment()">Create Custom Payment</button>
-    
-    <pre><code>VoltagePayments.create({
-  apiKey: "vltg_demo_key",
-  walletId: "demo_wallet_id",
-  amount: 500000, // 500 sats
-  description: "Premium service",
-  appearance: {
-    primaryColor: "#8b5cf6",
-    borderRadius: "12px",
-    backgroundColor: "#faf5ff"
-  }
-}).mount("#payment-custom");</code></pre>
-  </div>
+      .header h1 {
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+      }
 
-  <div class="demo-section">
-    <h2>Any Amount Payment</h2>
-    <p>Payment component that allows user to specify amount:</p>
-    
-    <div class="demo-container" id="payment-any-amount"></div>
-    
-    <button onclick="createAnyAmountPayment()">Create Any Amount Payment</button>
-    
-    <pre><code>VoltagePayments.create({
-  apiKey: "vltg_demo_key",
-  walletId: "demo_wallet_id",
-  amount: null, // User specifies amount
-  description: "Donation"
-}).mount("#payment-any-amount");</code></pre>
-  </div>
+      .header p {
+        color: #6b7280;
+        font-size: 1.125rem;
+      }
 
-  <script type="module">
-    // This will be our development entry point
-    import { VoltagePayments } from './src/main.ts';
-    
-    // Make it available globally for demo buttons
-    window.VoltagePayments = VoltagePayments;
-    
-    // Global functions for demo buttons
-    window.createBasicPayment = () => {
-      const container = document.getElementById('payment-basic');
-      container.innerHTML = ''; // Clear previous
-      
-      VoltagePayments.create({
-        apiKey: "vltg_demo_key",
-        walletId: "demo_wallet_id",
-        amount: 150000,
-        description: "Coffee purchase",
-        onReady: (payment) => console.log('Payment ready:', payment),
-        onError: (error) => console.error('Payment error:', error)
-      }).mount(container);
-    };
-    
-    window.createCustomPayment = () => {
-      const container = document.getElementById('payment-custom');
-      container.innerHTML = ''; // Clear previous
-      
-      VoltagePayments.create({
-        apiKey: "vltg_demo_key",
-        walletId: "demo_wallet_id",
-        amount: 500000,
-        description: "Premium service",
-        appearance: {
-          primaryColor: "#8b5cf6",
-          borderRadius: "12px",
-          backgroundColor: "#faf5ff"
-        },
-        onReady: (payment) => console.log('Custom payment ready:', payment),
-        onError: (error) => console.error('Custom payment error:', error)
-      }).mount(container);
-    };
-    
-    window.createAnyAmountPayment = () => {
-      const container = document.getElementById('payment-any-amount');
-      container.innerHTML = ''; // Clear previous
-      
-      VoltagePayments.create({
-        apiKey: "vltg_demo_key", 
-        walletId: "demo_wallet_id",
-        amount: null,
-        description: "Donation",
-        appearance: {
-          primaryColor: "#10b981"
-        },
-        onReady: (payment) => console.log('Any amount payment ready:', payment),
-        onError: (error) => console.error('Any amount payment error:', error)
-      }).mount(container);
-    };
-    
-    console.log('Voltage Payments loaded! Version:', VoltagePayments.version);
-  </script>
-</body>
-</html> 
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .demo-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-card h3 {
+        margin-top: 0;
+        color: #1f2937;
+        border-bottom: 2px solid #f7931a;
+        padding-bottom: 0.5rem;
+      }
+
+      .demo-card p {
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+      }
+
+      .payment-container {
+        margin: 1rem 0;
+      }
+
+      .code-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .code-section h2 {
+        margin-top: 0;
+        color: #1f2937;
+      }
+
+      pre {
+        background: #1f2937;
+        color: #f8fafc;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.875rem;
+      }
+
+      .status-log {
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 0.875rem;
+      }
+
+      .log-entry {
+        margin-bottom: 0.5rem;
+        padding: 0.25rem;
+        border-radius: 4px;
+      }
+
+      .log-ready {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .log-error {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+      .log-qr {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>⚡ Voltage Payment Component</h1>
+      <p>Interactive demo of the Bitcoin payment component library</p>
+    </div>
+
+    <div class="demo-grid">
+      <div class="demo-card">
+        <h3>Basic Payment</h3>
+        <p>Simple payment request with default styling</p>
+        <div id="payment-basic" class="payment-container"></div>
+      </div>
+
+      <div class="demo-card">
+        <h3>Custom Styled</h3>
+        <p>Payment with custom colors and appearance</p>
+        <div id="payment-custom" class="payment-container"></div>
+      </div>
+
+      <div class="demo-card">
+        <h3>Any Amount</h3>
+        <p>Payment request without a fixed amount</p>
+        <div id="payment-any-amount" class="payment-container"></div>
+      </div>
+    </div>
+
+    <div class="code-section">
+      <h2>Usage Example</h2>
+      <pre><code>// Import the library
+import { VoltagePayments } from '@voltage-payments/components';
+
+// Create a payment component
+const payment = VoltagePayments.create({
+  apiKey: 'your-api-key',
+  walletId: 'your-wallet-id',
+  amount: 100000, // 100k msats
+  description: 'Test payment',
+  onReady: (payment) => console.log('Payment ready:', payment),
+  onSuccess: (payment) => console.log('Payment successful:', payment)
+});
+
+// Mount to DOM element
+await payment.mount('#payment-container');</code></pre>
+
+      <h3>Event Log</h3>
+      <div id="event-log" class="status-log">
+        <div class="log-entry">Initializing components...</div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { VoltagePayments } from "./src/main.ts";
+
+      const eventLog = document.getElementById("event-log");
+
+      function logEvent(type, message, data = null) {
+        const entry = document.createElement("div");
+        entry.className = `log-entry log-${type}`;
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        if (data) {
+          entry.textContent += ` - ${JSON.stringify(data, null, 2)}`;
+        }
+        eventLog.appendChild(entry);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Basic payment
+      try {
+        const basicPayment = VoltagePayments.create({
+          apiKey: "demo-api-key",
+          walletId: "demo-wallet-id",
+          amount: 100000, // 100k msats
+          description: "Basic payment demo",
+          onReady: (payment) =>
+            logEvent("ready", "Basic payment ready", payment),
+          onQRGenerated: (qrData, paymentRequest) =>
+            logEvent("qr", "QR code generated for basic payment"),
+          onError: (error) => logEvent("error", "Basic payment error", error),
+        });
+
+        await basicPayment.mount("#payment-basic");
+        logEvent("ready", "Basic payment component mounted");
+      } catch (error) {
+        logEvent("error", "Failed to create basic payment", error);
+      }
+
+      // Custom styled payment
+      try {
+        const customPayment = VoltagePayments.create({
+          apiKey: "demo-api-key",
+          walletId: "demo-wallet-id",
+          amount: 250000, // 250k msats
+          description: "Custom styled payment",
+          appearance: {
+            primaryColor: "#8b5cf6",
+            backgroundColor: "#faf5ff",
+            borderColor: "#c4b5fd",
+            borderRadius: "16px",
+            textColor: "#581c87",
+          },
+          onReady: (payment) =>
+            logEvent("ready", "Custom payment ready", payment),
+          onQRGenerated: (qrData, paymentRequest) =>
+            logEvent("qr", "QR code generated for custom payment"),
+          onError: (error) => logEvent("error", "Custom payment error", error),
+        });
+
+        await customPayment.mount("#payment-custom");
+        logEvent("ready", "Custom payment component mounted");
+      } catch (error) {
+        logEvent("error", "Failed to create custom payment", error);
+      }
+
+      // Any amount payment
+      try {
+        const anyAmountPayment = VoltagePayments.create({
+          apiKey: "demo-api-key",
+          walletId: "demo-wallet-id",
+          amount: null, // Any amount
+          description: "Pay any amount",
+          appearance: {
+            primaryColor: "#059669",
+            borderColor: "#10b981",
+            borderRadius: "12px",
+          },
+          onReady: (payment) =>
+            logEvent("ready", "Any-amount payment ready", payment),
+          onQRGenerated: (qrData, paymentRequest) =>
+            logEvent("qr", "QR code generated for any-amount payment"),
+          onError: (error) =>
+            logEvent("error", "Any-amount payment error", error),
+        });
+
+        await anyAmountPayment.mount("#payment-any-amount");
+        logEvent("ready", "Any-amount payment component mounted");
+      } catch (error) {
+        logEvent("error", "Failed to create any-amount payment", error);
+      }
+    </script>
+  </body>
+</html>
