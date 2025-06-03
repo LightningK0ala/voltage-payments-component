@@ -469,6 +469,37 @@
           border: 1px solid var(--color-gray-300);
         }
       }
+
+      /* Simulate payment buttons */
+      .simulate-button {
+        margin-top: var(--spacing-4);
+        padding: var(--spacing-3) var(--spacing-4);
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius-md);
+        font-family: var(--font-family-base);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-2);
+        width: 100%;
+      }
+
+      .simulate-button:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        background: linear-gradient(135deg, #5856eb 0%, #7c3aed 100%);
+      }
+
+      .simulate-button:active {
+        transform: translateY(0);
+      }
     </style>
   </head>
   <body>
@@ -488,6 +519,9 @@
             professional appearance
           </p>
           <div id="payment-basic" class="payment-container"></div>
+          <button class="simulate-button" onclick="simulatePayment('basic')">
+            🎭 Simulate Payment Success
+          </button>
         </div>
 
         <div class="demo-card">
@@ -497,6 +531,9 @@
             design
           </p>
           <div id="payment-custom" class="payment-container"></div>
+          <button class="simulate-button" onclick="simulatePayment('custom')">
+            🎭 Simulate Payment Success
+          </button>
         </div>
 
         <div class="demo-card">
@@ -506,6 +543,12 @@
             green theme
           </p>
           <div id="payment-any-amount" class="payment-container"></div>
+          <button
+            class="simulate-button"
+            onclick="simulatePayment('anyAmount')"
+          >
+            🎭 Simulate Payment Success
+          </button>
         </div>
 
         <div class="demo-card">
@@ -515,6 +558,12 @@
             amount
           </p>
           <div id="payment-lightning-any" class="payment-container"></div>
+          <button
+            class="simulate-button"
+            onclick="simulatePayment('lightningAny')"
+          >
+            🎭 Simulate Payment Success
+          </button>
         </div>
 
         <div class="demo-card">
@@ -524,6 +573,9 @@
             auto-closes on success
           </p>
           <div id="payment-modal" class="payment-container"></div>
+          <button class="simulate-button" onclick="simulatePayment('modal')">
+            🎭 Simulate Payment Success
+          </button>
         </div>
 
         <div class="demo-card">
@@ -533,6 +585,9 @@
             activated
           </p>
           <div id="payment-button" class="payment-container"></div>
+          <button class="simulate-button" onclick="simulatePayment('button')">
+            🎭 Simulate Payment Success
+          </button>
         </div>
       </div>
 
@@ -565,12 +620,13 @@
       </div>
     </div>
 
-    // ... existing code ...
-
     <script type="module">
       import { VoltagePayments } from "./src/main.ts";
 
       const eventLog = document.getElementById("event-log");
+
+      // Store payment component references for simulation
+      const paymentComponents = {};
 
       function logEvent(type, message, data = null) {
         const entry = document.createElement("div");
@@ -582,6 +638,41 @@
         eventLog.appendChild(entry);
         eventLog.scrollTop = eventLog.scrollHeight;
       }
+
+      // Function to simulate payment success
+      window.simulatePayment = function (componentId) {
+        const component = paymentComponents[componentId];
+        if (!component) {
+          logEvent(
+            "error",
+            `Component ${componentId} not found for simulation`
+          );
+          return;
+        }
+
+        // Create mock payment data
+        const mockPaymentData = {
+          id: `sim_${Date.now()}`,
+          status: "completed",
+          paymentRequest: "lnbc1...",
+          amount: component.amount || 100000,
+          description: component.description || "Simulated payment",
+          expiresAt: new Date(Date.now() + 3600000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        logEvent(
+          "ready",
+          `🎭 Simulating payment success for ${componentId}`,
+          mockPaymentData
+        );
+
+        // Trigger the success callback
+        if (component.onSuccess) {
+          component.onSuccess(mockPaymentData);
+        }
+      };
 
       // For demo purposes, we'll use mock credentials
       // In production, you'd provide real API credentials
@@ -653,6 +744,15 @@
           onExpired: (payment) => logEvent("error", "⏰ Basic payment expired"),
         });
 
+        // Store component reference for simulation
+        paymentComponents.basic = {
+          component: basicPayment,
+          amount: 100000,
+          description: "Basic Lightning payment demo",
+          onSuccess: (payment) =>
+            logEvent("ready", "✅ Basic payment completed!", payment),
+        };
+
         await basicPayment.mount("#payment-basic");
         logEvent("ready", "Basic payment component mounted");
       } catch (error) {
@@ -697,6 +797,15 @@
 
         await customPayment.mount("#payment-custom");
         logEvent("ready", "Custom payment component mounted");
+
+        // Store component reference for simulation
+        paymentComponents.custom = {
+          component: customPayment,
+          amount: 250000,
+          description: "Custom styled BIP21 payment",
+          onSuccess: (payment) =>
+            logEvent("ready", "✅ Custom payment completed!", payment),
+        };
       } catch (error) {
         logEvent("error", "Failed to create custom payment", error);
       }
