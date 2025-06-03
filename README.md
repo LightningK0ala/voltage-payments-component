@@ -18,13 +18,13 @@ A lightweight, framework-agnostic Bitcoin payment component library for web appl
 ### NPM Package
 
 ```bash
-npm install @voltage-payments/components
+npm install voltage-payments-component
 ```
 
 ### Script Tag (CDN)
 
 ```html
-<script src="https://unpkg.com/@voltage-payments/components/dist/voltage-payments.umd.js"></script>
+<script src="https://unpkg.com/voltage-payments-component/dist/voltage-payments.umd.js"></script>
 ```
 
 ## 🔑 Voltage API Setup
@@ -42,7 +42,7 @@ Before using the component, you'll need:
 ### ES Modules (Recommended)
 
 ```javascript
-import { VoltagePayments } from "@voltage-payments/components";
+import { VoltagePayments } from "voltage-payments-component";
 
 const payment = VoltagePayments.create({
   // Required: Voltage API credentials
@@ -64,6 +64,34 @@ const payment = VoltagePayments.create({
 
 // Mount to DOM element
 await payment.mount("#payment-container");
+```
+
+### Modal Payment
+
+```javascript
+// Create a modal payment that opens when a button is clicked
+const modalPayment = VoltagePayments.create({
+  apiKey: "your-voltage-api-key",
+  organizationId: "your-org-id",
+  environmentId: "your-env-id",
+  walletId: "your-wallet-id",
+  amount: 50000,
+  variant: "modal", // Creates a modal dialog
+  paymentKind: "bolt11",
+  description: "Lightning Payment",
+  autoClose: true, // Auto-close modal on successful payment
+
+  // Modal-specific callbacks
+  onModalOpen: () => console.log("Modal opened"),
+  onModalClose: () => console.log("Modal closed"),
+  onSuccess: (payment) => {
+    console.log("Payment completed!");
+    // Modal will auto-close in 2 seconds
+  },
+});
+
+// This creates a "Pay with Bitcoin" button that opens the modal
+await modalPayment.mount("#modal-button-container");
 ```
 
 ### UMD (Script Tag)
@@ -140,6 +168,33 @@ VoltagePayments.create({
 VoltagePayments.create({
   paymentKind: "bip21", // Provides both Lightning and on-chain options
   amount: 250000, // Must be >= 1 msat for on-chain compatibility
+  // ... other config
+});
+```
+
+### Payment Variants
+
+#### Inline Payment (Default)
+
+```javascript
+VoltagePayments.create({
+  variant: "inline", // Default - embeds directly in your page
+  // ... other config
+});
+```
+
+#### Modal Payment
+
+```javascript
+VoltagePayments.create({
+  variant: "modal", // Creates a modal dialog triggered by a button
+  autoClose: true, // Auto-close modal on success (default: true)
+  description: "Custom button text", // Used as button text
+  appearance: {
+    primaryColor: "#8b5cf6", // Customizes button and modal styling
+  },
+  onModalOpen: () => console.log("Modal opened"),
+  onModalClose: () => console.log("Modal closed"),
   // ... other config
 });
 ```
@@ -287,7 +342,9 @@ Creates a new payment component instance.
 | `walletId`       | string                           | ✅       | Target wallet ID for payments              |
 | `amount`         | number                           | ❌       | Amount in millisats (use 0 for any amount) |
 | `paymentKind`    | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')            |
+| `variant`        | 'inline' \| 'modal' \| 'button'  | ❌       | Payment variant (default: 'inline')        |
 | `description`    | string                           | ❌       | Payment description                        |
+| `autoClose`      | boolean                          | ❌       | Auto-close modal on success (modal only)   |
 | `appearance`     | AppearanceConfig                 | ❌       | Visual customization options               |
 | `pollingConfig`  | PollingConfig                    | ❌       | Payment status polling configuration       |
 | `onReady`        | function                         | ❌       | Called when payment is ready               |
@@ -296,6 +353,8 @@ Creates a new payment component instance.
 | `onExpired`      | function                         | ❌       | Called when payment expires                |
 | `onStatusChange` | function                         | ❌       | Called when payment status changes         |
 | `onQRGenerated`  | function                         | ❌       | Called when QR code is generated           |
+| `onModalOpen`    | function                         | ❌       | Called when modal opens (modal only)       |
+| `onModalClose`   | function                         | ❌       | Called when modal closes (modal only)      |
 
 ### Payment Component Methods
 
@@ -331,10 +390,20 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Current Status**: ✅ Phase 1 Complete - Real Voltage API Integration
+**Current Status**: ✅ Phase 2 Complete - Modal Payment Variant
+
+**Completed Features**:
+
+- ✅ Inline Payment Component
+- ✅ Modal Payment Component
+- ✅ Real Voltage API Integration
+- ✅ QR Code Generation
+- ✅ Multiple Payment Types (Lightning, On-chain, BIP21)
+- ✅ Custom Styling & Theming
+- ✅ TypeScript Support
 
 **Next Steps**:
 
-- [ ] QR Code Generation
+- [ ] Button Payment Variant (Phase 3)
 - [ ] Enhanced Error Handling
-- [ ] Modal & Button Variants
+- [ ] Framework Wrappers (React, Vue, Angular)

@@ -140,7 +140,7 @@ VoltagePayments.create({
 ### Package Structure
 
 ```
-@voltage-payments/components
+voltage-payments-component
 ├── dist/
 │   ├── voltage-payments.js        # UMD bundle for CDN
 │   ├── voltage-payments.esm.js    # ES modules
@@ -731,7 +731,7 @@ test("complete payment flow", async ({ page }) => {
 ### 2. NPM Package
 
 ```bash
-npm install @voltage-payments/components
+npm install voltage-payments-component
 ```
 
 ### 3. Framework Wrappers
