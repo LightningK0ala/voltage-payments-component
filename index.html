@@ -525,6 +525,15 @@
           </p>
           <div id="payment-modal" class="payment-container"></div>
         </div>
+
+        <div class="demo-card">
+          <h3>Button Payment</h3>
+          <p>
+            Click-to-reveal payment interface - shows QR code inline when
+            activated
+          </p>
+          <div id="payment-button" class="payment-container"></div>
+        </div>
       </div>
 
       <div class="code-section">
@@ -812,6 +821,54 @@
         logEvent("ready", "Modal payment component mounted");
       } catch (error) {
         logEvent("error", "Failed to create modal payment", error);
+      }
+
+      // Button payment
+      try {
+        const buttonPayment = VoltagePayments.create({
+          apiKey: DEMO_CONFIG.apiKey,
+          walletId: DEMO_CONFIG.walletId,
+          organizationId: DEMO_CONFIG.organizationId,
+          environmentId: DEMO_CONFIG.environmentId,
+          amount: 21000, // 21 sats
+          paymentKind: "bolt11",
+          variant: "button",
+          description: "Quick Lightning Payment",
+          appearance: {
+            primaryColor: "#10b981",
+            borderRadius: "10px",
+          },
+          onReady: (payment) =>
+            logEvent("ready", "🔘 Button payment ready", payment),
+          onQRGenerated: (qrData, paymentRequest) =>
+            logEvent("qr", "📱 Button QR code generated", {
+              qrLength: qrData.length,
+              type: "bolt11_button",
+            }),
+          onStatusChange: (status, payment) =>
+            logEvent("ready", `Button payment status: ${status}`),
+          onSuccess: (payment) =>
+            logEvent("ready", "✅ Button payment completed!", payment),
+          onError: (error) =>
+            logEvent("error", "❌ Button payment error", error),
+          onExpired: (payment) =>
+            logEvent("error", "⏰ Button payment expired"),
+          onButtonActivated: () =>
+            logEvent(
+              "ready",
+              "🔘 Button activated - payment interface visible"
+            ),
+          onButtonDeactivated: () =>
+            logEvent(
+              "ready",
+              "🔘 Button deactivated - payment interface hidden"
+            ),
+        });
+
+        await buttonPayment.mount("#payment-button");
+        logEvent("ready", "Button payment component mounted");
+      } catch (error) {
+        logEvent("error", "Failed to create button payment", error);
       }
     </script>
   </body>

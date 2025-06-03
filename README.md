@@ -94,6 +94,32 @@ const modalPayment = VoltagePayments.create({
 await modalPayment.mount("#modal-button-container");
 ```
 
+### Button Payment
+
+```javascript
+// Create a button that reveals payment interface when clicked
+const buttonPayment = VoltagePayments.create({
+  apiKey: "your-voltage-api-key",
+  organizationId: "your-org-id",
+  environmentId: "your-env-id",
+  walletId: "your-wallet-id",
+  amount: 25000,
+  variant: "button", // Creates a click-to-reveal button
+  paymentKind: "bolt11",
+  description: "Quick Payment",
+
+  // Button-specific callbacks
+  onButtonActivated: () => console.log("Payment interface revealed"),
+  onSuccess: (payment) => {
+    console.log("Payment completed!");
+    // Interface auto-collapses after 3 seconds
+  },
+});
+
+// This creates a button that reveals the payment interface when clicked
+await buttonPayment.mount("#button-container");
+```
+
 ### UMD (Script Tag)
 
 ```html
@@ -195,6 +221,26 @@ VoltagePayments.create({
   },
   onModalOpen: () => console.log("Modal opened"),
   onModalClose: () => console.log("Modal closed"),
+  // ... other config
+});
+```
+
+#### Button Payment
+
+```javascript
+VoltagePayments.create({
+  variant: "button", // Creates a button that reveals payment interface inline
+  description: "Quick Payment", // Used as button text
+  appearance: {
+    primaryColor: "#10b981", // Customizes button styling
+    borderRadius: "10px",
+  },
+  onButtonActivated: () => console.log("Payment interface visible"),
+  onButtonDeactivated: () => console.log("Payment interface hidden"),
+  onSuccess: (payment) => {
+    console.log("Payment completed!");
+    // Interface auto-collapses after 3 seconds
+  },
   // ... other config
 });
 ```
@@ -334,27 +380,29 @@ Creates a new payment component instance.
 
 #### Options
 
-| Option           | Type                             | Required | Description                                |
-| ---------------- | -------------------------------- | -------- | ------------------------------------------ |
-| `apiKey`         | string                           | ✅       | Your Voltage API key                       |
-| `organizationId` | string                           | ✅       | Your Voltage organization ID               |
-| `environmentId`  | string                           | ✅       | Your Voltage environment ID                |
-| `walletId`       | string                           | ✅       | Target wallet ID for payments              |
-| `amount`         | number                           | ❌       | Amount in millisats (use 0 for any amount) |
-| `paymentKind`    | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')            |
-| `variant`        | 'inline' \| 'modal' \| 'button'  | ❌       | Payment variant (default: 'inline')        |
-| `description`    | string                           | ❌       | Payment description                        |
-| `autoClose`      | boolean                          | ❌       | Auto-close modal on success (modal only)   |
-| `appearance`     | AppearanceConfig                 | ❌       | Visual customization options               |
-| `pollingConfig`  | PollingConfig                    | ❌       | Payment status polling configuration       |
-| `onReady`        | function                         | ❌       | Called when payment is ready               |
-| `onSuccess`      | function                         | ❌       | Called when payment succeeds               |
-| `onError`        | function                         | ❌       | Called when payment fails                  |
-| `onExpired`      | function                         | ❌       | Called when payment expires                |
-| `onStatusChange` | function                         | ❌       | Called when payment status changes         |
-| `onQRGenerated`  | function                         | ❌       | Called when QR code is generated           |
-| `onModalOpen`    | function                         | ❌       | Called when modal opens (modal only)       |
-| `onModalClose`   | function                         | ❌       | Called when modal closes (modal only)      |
+| Option                | Type                             | Required | Description                                     |
+| --------------------- | -------------------------------- | -------- | ----------------------------------------------- |
+| `apiKey`              | string                           | ✅       | Your Voltage API key                            |
+| `organizationId`      | string                           | ✅       | Your Voltage organization ID                    |
+| `environmentId`       | string                           | ✅       | Your Voltage environment ID                     |
+| `walletId`            | string                           | ✅       | Target wallet ID for payments                   |
+| `amount`              | number                           | ❌       | Amount in millisats (use 0 for any amount)      |
+| `paymentKind`         | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')                 |
+| `variant`             | 'inline' \| 'modal' \| 'button'  | ❌       | Payment variant (default: 'inline')             |
+| `description`         | string                           | ❌       | Payment description                             |
+| `autoClose`           | boolean                          | ❌       | Auto-close modal on success (modal only)        |
+| `appearance`          | AppearanceConfig                 | ❌       | Visual customization options                    |
+| `pollingConfig`       | PollingConfig                    | ❌       | Payment status polling configuration            |
+| `onReady`             | function                         | ❌       | Called when payment is ready                    |
+| `onSuccess`           | function                         | ❌       | Called when payment succeeds                    |
+| `onError`             | function                         | ❌       | Called when payment fails                       |
+| `onExpired`           | function                         | ❌       | Called when payment expires                     |
+| `onStatusChange`      | function                         | ❌       | Called when payment status changes              |
+| `onQRGenerated`       | function                         | ❌       | Called when QR code is generated                |
+| `onModalOpen`         | function                         | ❌       | Called when modal opens (modal only)            |
+| `onModalClose`        | function                         | ❌       | Called when modal closes (modal only)           |
+| `onButtonActivated`   | function                         | ❌       | Called when button is activated (button only)   |
+| `onButtonDeactivated` | function                         | ❌       | Called when button is deactivated (button only) |
 
 ### Payment Component Methods
 
@@ -390,20 +438,24 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Current Status**: ✅ Phase 2 Complete - Modal Payment Variant
+**Current Status**: ✅ Phase 3 Complete - All Payment Variants Implemented
 
 **Completed Features**:
 
-- ✅ Inline Payment Component
-- ✅ Modal Payment Component
+- ✅ Inline Payment Component (embeds directly in page)
+- ✅ Modal Payment Component (opens in modal dialog)
+- ✅ Button Payment Component (click-to-reveal interface)
 - ✅ Real Voltage API Integration
-- ✅ QR Code Generation
+- ✅ QR Code Generation & Display
 - ✅ Multiple Payment Types (Lightning, On-chain, BIP21)
 - ✅ Custom Styling & Theming
 - ✅ TypeScript Support
+- ✅ Mobile Responsive Design
+- ✅ Accessibility Features
 
 **Next Steps**:
 
-- [ ] Button Payment Variant (Phase 3)
-- [ ] Enhanced Error Handling
+- [ ] Enhanced Error Handling & Recovery
 - [ ] Framework Wrappers (React, Vue, Angular)
+- [ ] NPM Package Publishing
+- [ ] Advanced Customization Options
