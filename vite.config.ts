@@ -24,7 +24,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: "src/main.ts",
+      entry: "src/index.ts",
       name: "VoltagePayments",
       formats: ["es", "umd"],
       fileName: (format) =>
