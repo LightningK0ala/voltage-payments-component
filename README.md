@@ -56,6 +56,9 @@ const payment = VoltagePayments.create({
   paymentKind: "bip21", // 'bolt11', 'onchain', or 'bip21'
   description: "Coffee purchase",
 
+  // Optional: Custom API endpoint
+  baseUrl: "https://api.voltage.com/v1", // Defaults to https://voltageapi.com/v1
+
   // Event handlers
   onReady: (payment) => console.log("Payment ready:", payment),
   onSuccess: (payment) => console.log("Payment completed!", payment),
@@ -391,6 +394,7 @@ Creates a new payment component instance.
 | `variant`             | 'inline' \| 'modal' \| 'button'  | ❌       | Payment variant (default: 'inline')             |
 | `description`         | string                           | ❌       | Payment description                             |
 | `autoClose`           | boolean                          | ❌       | Auto-close modal on success (modal only)        |
+| `baseUrl`             | string                           | ❌       | Custom Voltage API base URL                     |
 | `appearance`          | AppearanceConfig                 | ❌       | Visual customization options                    |
 | `pollingConfig`       | PollingConfig                    | ❌       | Payment status polling configuration            |
 | `onReady`             | function                         | ❌       | Called when payment is ready                    |
