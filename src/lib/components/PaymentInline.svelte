@@ -9,40 +9,64 @@
     PollingConfig,
   } from "../types/index";
 
-  // Props
-  export let apiKey: string;
-  export let walletId: string;
-  export let amount: number | null = null;
-  export let paymentKind: PaymentKind = "bip21";
-  export let description: string = "";
-  export let appearance: AppearanceConfig = {};
-  export let theme: "light" | "dark" | "auto" = "auto";
-  export let showQRCode: boolean = true;
-  export let showCopyButton: boolean = true;
-  export let pollingConfig: PollingConfig = {};
-  export let organizationId: string | undefined = undefined;
-  export let environmentId: string | undefined = undefined;
-  export let baseUrl: string | undefined = undefined;
-  // Taproot Asset props (used when paymentKind === 'taprootasset')
-  export let assetCurrency: string | undefined = undefined; // 'asset:<66-hex>'
-  export let assetAmount: number | undefined = undefined; // base units
-  export let assetLabel: string | undefined = undefined; // optional label for UI
-  export let assetDecimals: number | undefined = undefined; // optional decimals for human display
+  
+  
+  interface Props {
+    // Props
+    apiKey: string;
+    walletId: string;
+    amount?: number | null;
+    paymentKind?: PaymentKind;
+    description?: string;
+    appearance?: AppearanceConfig;
+    theme?: "light" | "dark" | "auto";
+    showQRCode?: boolean;
+    showCopyButton?: boolean;
+    pollingConfig?: PollingConfig;
+    organizationId?: string | undefined;
+    environmentId?: string | undefined;
+    baseUrl?: string | undefined;
+    // Taproot Asset props (used when paymentKind === 'taprootasset')
+    assetCurrency?: string | undefined; // 'asset:<66-hex>'
+    assetAmount?: number | undefined; // base units
+    assetLabel?: string | undefined; // optional label for UI
+    assetDecimals?: number | undefined; // optional decimals for human display
+  }
+
+  let {
+    apiKey,
+    walletId,
+    amount = null,
+    paymentKind = "bip21",
+    description = "",
+    appearance = {},
+    theme = "auto",
+    showQRCode = true,
+    showCopyButton = true,
+    pollingConfig = {},
+    organizationId = undefined,
+    environmentId = undefined,
+    baseUrl = undefined,
+    assetCurrency = undefined,
+    assetAmount = undefined,
+    assetLabel = undefined,
+    assetDecimals = undefined
+  }: Props = $props();
 
   // Internal state
-  let status: PaymentStatus = "generating";
-  let paymentRequest: string = "";
-  let address: string = "";
+  let status: PaymentStatus = $state("generating");
+  let paymentRequest: string = $state("");
+  let address: string = $state("");
   let paymentId: string = "";
-  let error: string | null = null;
-  let isLoading: boolean = true;
-  let qrCodeDataUrl: string = "";
+  let error: string | null = $state(null);
+  let isLoading: boolean = $state(true);
+  let qrCodeDataUrl: string = $state("");
   let expiresAt: Date | null = null;
-  let timeRemaining: number = 0;
+  let timeRemaining: number = $state(0);
   let countdownInterval: ReturnType<typeof setInterval> | null = null;
-  let showSuccessAnimation: boolean = false;
-  let transactionId: string | null = null;
-  let copySuccess: boolean = false;
+  let showSuccessAnimation: boolean = $state(false);
+  let transactionId: string | null = $state(null);
+  let copySuccess: boolean = $state(false);
   let copyTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Create Voltage client instance
@@ -51,19 +75,7 @@
   // Event dispatcher
   const dispatch = createEventDispatcher();
 
-  // Generate CSS custom properties from appearance config
-  $: cssVars = {
-    "--vp-primary": appearance.primaryColor || "#f7931a",
-    "--vp-bg": appearance.backgroundColor || "#ffffff",
-    "--vp-border": appearance.borderColor || "#e5e7eb",
-    "--vp-radius": appearance.borderRadius || "8px",
-    "--vp-font": appearance.fontFamily || "system-ui, sans-serif",
-    "--vp-text": appearance.textColor || "#1f2937",
-    "--vp-text-secondary": appearance.secondaryTextColor || "#6b7280",
-  };
 
-  // Enhanced status messages with icons
-  $: statusDisplay = getStatusDisplay(status, timeRemaining);
 
   function getStatusDisplay(currentStatus: PaymentStatus, remaining: number) {
     switch (currentStatus) {
@@ -496,9 +508,6 @@
     }
   }
 
-  // Display the appropriate payment string
-  $: displayPaymentString = paymentRequest || address;
-  $: displayLabel = paymentRequest ? "Payment Request:" : "Bitcoin Address:";
 
   function startCountdownTimer() {
     if (paymentKind !== "bolt11" || !expiresAt) return;
@@ -536,6 +545,21 @@
       showSuccessAnimation = false;
     }, 3000); // Show animation for 3 seconds
   }
+  // Generate CSS custom properties from appearance config
+  let cssVars = $derived({
+    "--vp-primary": appearance.primaryColor || "#f7931a",
+    "--vp-bg": appearance.backgroundColor || "#ffffff",
+    "--vp-border": appearance.borderColor || "#e5e7eb",
+    "--vp-radius": appearance.borderRadius || "8px",
+    "--vp-font": appearance.fontFamily || "system-ui, sans-serif",
+    "--vp-text": appearance.textColor || "#1f2937",
+    "--vp-text-secondary": appearance.secondaryTextColor || "#6b7280",
+  });
+  // Enhanced status messages with icons
+  let statusDisplay = $derived(getStatusDisplay(status, timeRemaining));
+  // Display the appropriate payment string
+  let displayPaymentString = $derived(paymentRequest || address);
+  let displayLabel = $derived(paymentRequest ? "Payment Request:" : "Bitcoin Address:");
 </script>
 
 <div
@@ -666,7 +690,7 @@
               {#if showCopyButton}
                 <button
                   type="button"
-                  on:click={copyToClipboard}
+                  onclick={copyToClipboard}
                   class="copy-button"
                   class:copy-success={copySuccess}
                   aria-label="Copy payment request"
