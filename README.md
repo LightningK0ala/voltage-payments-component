@@ -341,13 +341,13 @@ VoltagePayments.create({
 ### Local Development
 
 ```sh
-git clone https://github.com/voltage/voltage-payment-component
-cd voltage-payment-component
+git clone https://github.com/voltage/voltage-payments-component
+cd voltage-payments-component
 npm install
 npm run dev
 ```
 
-Visit `http://localhost:5175` to see the interactive demo.
+Visit `http://localhost:5173` to see the interactive demo.
 
 ### Using Real API Credentials in Development
 
