@@ -340,7 +340,7 @@ VoltagePayments.create({
 
 ### Local Development
 
-```bash
+```sh
 git clone https://github.com/voltage/voltage-payment-component
 cd voltage-payment-component
 npm install
@@ -355,13 +355,13 @@ To test with real Voltage API credentials instead of mock data:
 
 1. **Copy the environment template:**
 
-   ```bash
+   ```sh
    cp .env.example .env
    ```
 
 2. **Fill in your real Voltage API credentials in `.env`:**
 
-   ```bash
+   ```sh
    # Your actual Voltage API credentials
    VITE_VOLTAGE_API_KEY=vltg_your_actual_api_key_here
    VITE_VOLTAGE_ORGANIZATION_ID=your_actual_org_id
@@ -370,7 +370,7 @@ To test with real Voltage API credentials instead of mock data:
    ```
 
 3. **Start the development server:**
-   ```bash
+   ```sh
    npm run dev
    ```
 
@@ -385,7 +385,7 @@ The demo will automatically detect and use your real API credentials, allowing y
 
 ### Building
 
-```bash
+```sh
 npm run build        # Build library
 npm run type-check   # Type checking
 npm run test         # Run tests
