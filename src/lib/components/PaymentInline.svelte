@@ -23,6 +23,11 @@
   export let organizationId: string | undefined = undefined;
   export let environmentId: string | undefined = undefined;
   export let baseUrl: string | undefined = undefined;
+  // Taproot Asset props (used when paymentKind === 'taprootasset')
+  export let assetCurrency: string | undefined = undefined; // 'asset:<66-hex>'
+  export let assetAmount: number | undefined = undefined; // base units
+  export let assetLabel: string | undefined = undefined; // optional label for UI
+  export let assetDecimals: number | undefined = undefined; // optional decimals for human display
 
   // Internal state
   let status: PaymentStatus = "generating";
@@ -96,6 +101,26 @@
     }
   }
 
+  // Format asset amount from base units to human-readable using decimals
+  function formatAssetAmount(
+    amountBaseUnits: number,
+    decimals: number
+  ): string {
+    if (
+      !Number.isFinite(amountBaseUnits) ||
+      !Number.isFinite(decimals) ||
+      decimals <= 0
+    ) {
+      return amountBaseUnits.toLocaleString();
+    }
+    const divisor = Math.pow(10, decimals);
+    const value = amountBaseUnits / divisor;
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals,
+    });
+  }
+
   onMount(async () => {
     try {
       // Initialize Voltage client with custom baseUrl if provided, otherwise use default logic
@@ -139,6 +164,7 @@
   });
 
   async function createPaymentRequest() {
+    console.log({ assetAmount });
     try {
       // Validate required parameters
       if (!organizationId || !environmentId) {
@@ -150,23 +176,43 @@
       // Generate unique payment ID
       paymentId = crypto.randomUUID();
 
-      // Build payment object - for bolt11 amountless invoices, omit amount_msats entirely
+      // Build payment object depending on kind
       const paymentObj: any = {
         id: paymentId,
         wallet_id: walletId,
-        currency: "btc",
         payment_kind: paymentKind,
         description: description || "Voltage Payment Component",
       };
 
-      // Only include amount_msats if:
-      // 1. It's not a bolt11 payment, OR
-      // 2. It's a bolt11 payment with a specified amount (amount > 0)
-      if (
-        paymentKind !== "bolt11" ||
-        (paymentKind === "bolt11" && amount !== null && amount > 0)
-      ) {
-        paymentObj.amount_msats = amount;
+      if (paymentKind === "taprootasset") {
+        if (
+          !assetCurrency ||
+          typeof assetAmount !== "number" ||
+          assetAmount <= 0
+        ) {
+          throw new Error(
+            "For taprootasset, assetCurrency ('asset:<groupkey>') and positive assetAmount (base units) are required"
+          );
+        }
+        paymentObj.amount = {
+          currency: assetCurrency,
+          amount: assetAmount,
+          unit: "base units",
+        };
+      } else {
+        paymentObj.currency = "btc";
+        // Only include amount_msats if:
+        // 1. It's not a bolt11 payment, OR
+        // 2. It's a bolt11 payment with a specified amount (amount > 0)
+        if (
+          paymentKind !== "bolt11" ||
+          (paymentKind === "bolt11" &&
+            amount !== null &&
+            amount !== undefined &&
+            amount > 0)
+        ) {
+          paymentObj.amount_msats = amount;
+        }
       }
 
       // Create payment request using Voltage API
@@ -193,6 +239,12 @@
       } else if (payment.type === "bip21") {
         paymentRequest = payment.data.payment_request || "";
         address = payment.data.address || "";
+      } else if (payment.type === "taprootasset") {
+        paymentRequest = payment.data.payment_request || "";
+        // Prefer server-provided expiration if present
+        if (payment.data.expiration) {
+          expiresAt = new Date(payment.data.expiration);
+        }
       }
 
       status = "ready";
@@ -227,7 +279,11 @@
       }
 
       // Start polling for payment status if needed
-      if (payment.status === "receiving" || payment.status === "generating") {
+      if (
+        payment.status === "receiving" ||
+        payment.status === "generating" ||
+        payment.status === "approved"
+      ) {
         startPaymentStatusPolling();
       }
 
@@ -397,6 +453,8 @@
     voltageStatus: string
   ): PaymentStatus {
     switch (voltageStatus) {
+      case "approved":
+        return "generating";
       case "generating":
         return "generating";
       case "receiving":
@@ -551,14 +609,35 @@
               >
             {:else if paymentKind === "bip21"}
               💎 Universal
+            {:else if paymentKind === "taprootasset"}
+              🪙 Taproot Asset {#if assetLabel}({assetLabel}){/if}
               <span
                 class="info-tooltip"
-                title="Supports both Lightning and on-chain payments.">ℹ️</span
+                title="Taproot Asset invoice. Asset amount is specified in base units."
+                >ℹ️</span
               >
             {/if}
           </div>
 
-          {#if amount && amount > 0}
+          {#if paymentKind === "taprootasset"}
+            <div class="amount-display">
+              {#if typeof assetAmount === "number"}
+                {#if typeof assetDecimals === "number" && assetDecimals > 0}
+                  <strong>
+                    {formatAssetAmount(assetAmount, assetDecimals)}
+                    {assetLabel || "ASSET"}
+                  </strong>
+                {:else}
+                  <strong
+                    >{assetAmount.toLocaleString()}
+                    {assetLabel || "base units"}</strong
+                  >
+                {/if}
+              {:else}
+                <strong>Amount required</strong>
+              {/if}
+            </div>
+          {:else if amount && amount > 0}
             <div class="amount-display">
               <strong>{(amount / 100000000).toFixed(8)} BTC</strong>
               <span class="amount-msats">({amount.toLocaleString()} msats)</span

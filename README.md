@@ -8,7 +8,7 @@ A lightweight, framework-agnostic Bitcoin payment component library for web appl
 - **Framework Agnostic**: Works with any web framework (React, Vue, Angular, vanilla JS)
 - **Real-time Updates**: Live payment status with configurable polling
 - **Voltage API Integration**: Powered by the official Voltage API SDK
-- **Multiple Payment Types**: Lightning (Bolt11), On-chain, and BIP21 (unified)
+- **Multiple Payment Types**: Lightning (Bolt11), On-chain, BIP21 (unified), and Taproot Assets
 - **Customizable UI**: CSS custom properties for complete theming control
 - **TypeScript Support**: Full type definitions included
 - **Responsive Design**: Mobile-first responsive layout
@@ -52,8 +52,8 @@ const payment = VoltagePayments.create({
   walletId: "your-wallet-id",
 
   // Payment configuration
-  amount: 100000, // 100k millisats = 100 sats
-  paymentKind: "bip21", // 'bolt11', 'onchain', or 'bip21'
+  amount: 100000, // 100k millisats = 100 sats (BTC)
+  paymentKind: "bip21", // 'bolt11', 'onchain', 'bip21', or 'taprootasset'
   description: "Coffee purchase",
 
   // Optional: Custom API endpoint
@@ -199,6 +199,21 @@ VoltagePayments.create({
   amount: 250000, // Must be >= 1 msat for on-chain compatibility
   // ... other config
 });
+
+#### Taproot Asset
+
+```javascript
+// Receive a Taproot Asset payment by specifying assetCurrency and assetAmount
+VoltagePayments.create({
+  paymentKind: "taprootasset",
+  // VCASH group key (mutinynet); replace with your asset
+  assetCurrency:
+    "asset:034d8de991e76a6994753ddb4505d354873f96a1aa400a82eac1ee4fd443cfd62e",
+  assetAmount: 1_000_000, // base units (1 VCASH with decimals=6)
+  assetDecimals: 6, // optional, for display formatting
+  assetLabel: "VCASH", // optional UI label
+  // ... API and other config
+});
 ```
 
 ### Payment Variants
@@ -253,6 +268,7 @@ VoltagePayments.create({
 - **Lightning (bolt11)**: Use `amount: null` for amountless invoices (payer specifies amount), or specify `amount > 0` for fixed amounts
 - **On-chain**: Must use `amount >= 1` (recommend 546 sats = 54,600,000 msats as dust limit)
 - **BIP21**: Must use `amount >= 1` for on-chain compatibility
+- **Taproot Asset**: Provide `assetCurrency` and `assetAmount` (base units). Optional `assetDecimals` controls display formatting (e.g., `6`).
 
 ## 📡 Event Handling
 
@@ -389,8 +405,8 @@ Creates a new payment component instance.
 | `organizationId`      | string                           | ✅       | Your Voltage organization ID                    |
 | `environmentId`       | string                           | ✅       | Your Voltage environment ID                     |
 | `walletId`            | string                           | ✅       | Target wallet ID for payments                   |
-| `amount`              | number                           | ❌       | Amount in millisats (use 0 for any amount)      |
-| `paymentKind`         | 'bolt11' \| 'onchain' \| 'bip21' | ❌       | Payment type (default: 'bip21')                 |
+| `amount`              | number                           | ❌       | BTC amount in millisats (use 0 or null for any-amount bolt11) |
+| `paymentKind`         | 'bolt11' \| 'onchain' \| 'bip21' \| 'taprootasset' | ❌       | Payment type (default: 'bip21') |
 | `variant`             | 'inline' \| 'modal' \| 'button'  | ❌       | Payment variant (default: 'inline')             |
 | `description`         | string                           | ❌       | Payment description                             |
 | `autoClose`           | boolean                          | ❌       | Auto-close modal on success (modal only)        |
@@ -407,6 +423,10 @@ Creates a new payment component instance.
 | `onModalClose`        | function                         | ❌       | Called when modal closes (modal only)           |
 | `onButtonActivated`   | function                         | ❌       | Called when button is activated (button only)   |
 | `onButtonDeactivated` | function                         | ❌       | Called when button is deactivated (button only) |
+| `assetCurrency`       | string                           | ❌       | Taproot Asset group key `asset:<66-hex>` (required for `taprootasset`) |
+| `assetAmount`         | number                           | ❌       | Taproot Asset amount in base units (required for `taprootasset`) |
+| `assetDecimals`       | number                           | ❌       | Optional decimals for display formatting (e.g., VCASH = 6) |
+| `assetLabel`          | string                           | ❌       | Optional asset label for UI (e.g., 'VCASH')     |
 
 ### Payment Component Methods
 

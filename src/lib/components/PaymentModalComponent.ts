@@ -44,9 +44,7 @@ export class PaymentModalComponent implements PaymentComponent {
     this.svelteComponent = new PaymentModal({
       target: document.body,
       props: {
-        apiKey: this.options.apiKey,
-        walletId: this.options.walletId,
-        amount: this.options.amount,
+        ...this.options,
         paymentKind: this.options.paymentKind || "bip21",
         description: this.options.description || "",
         appearance: this.options.appearance || {},
@@ -54,9 +52,6 @@ export class PaymentModalComponent implements PaymentComponent {
         showQRCode: this.options.showQRCode !== false,
         showCopyButton: this.options.showCopyButton !== false,
         pollingConfig: this.options.pollingConfig || {},
-        organizationId: this.options.organizationId,
-        environmentId: this.options.environmentId,
-        baseUrl: this.options.baseUrl,
         autoClose: this.options.autoClose !== false,
       },
     });
@@ -89,9 +84,7 @@ export class PaymentModalComponent implements PaymentComponent {
     if (this.svelteComponent) {
       // Update the Svelte component props
       this.svelteComponent.$set({
-        apiKey: this.options.apiKey,
-        walletId: this.options.walletId,
-        amount: this.options.amount,
+        ...this.options,
         paymentKind: this.options.paymentKind || "bip21",
         description: this.options.description || "",
         appearance: this.options.appearance || {},
@@ -99,9 +92,6 @@ export class PaymentModalComponent implements PaymentComponent {
         showQRCode: this.options.showQRCode !== false,
         showCopyButton: this.options.showCopyButton !== false,
         pollingConfig: this.options.pollingConfig || {},
-        organizationId: this.options.organizationId,
-        environmentId: this.options.environmentId,
-        baseUrl: this.options.baseUrl,
         autoClose: this.options.autoClose !== false,
       });
     }

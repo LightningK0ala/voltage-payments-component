@@ -40,9 +40,7 @@ export class PaymentInlineComponent implements PaymentComponent {
     this.svelteComponent = new PaymentInline({
       target: this.container,
       props: {
-        apiKey: this.options.apiKey,
-        walletId: this.options.walletId,
-        amount: this.options.amount,
+        ...this.options,
         paymentKind: this.options.paymentKind || "bip21",
         description: this.options.description || "",
         appearance: this.options.appearance || {},
@@ -50,9 +48,6 @@ export class PaymentInlineComponent implements PaymentComponent {
         showQRCode: this.options.showQRCode !== false,
         showCopyButton: this.options.showCopyButton !== false,
         pollingConfig: this.options.pollingConfig || {},
-        organizationId: this.options.organizationId,
-        environmentId: this.options.environmentId,
-        baseUrl: this.options.baseUrl,
       },
     });
 
@@ -78,9 +73,7 @@ export class PaymentInlineComponent implements PaymentComponent {
     if (this.svelteComponent) {
       // Update the Svelte component props
       this.svelteComponent.$set({
-        apiKey: this.options.apiKey,
-        walletId: this.options.walletId,
-        amount: this.options.amount,
+        ...this.options,
         paymentKind: this.options.paymentKind || "bip21",
         description: this.options.description || "",
         appearance: this.options.appearance || {},
@@ -88,9 +81,6 @@ export class PaymentInlineComponent implements PaymentComponent {
         showQRCode: this.options.showQRCode !== false,
         showCopyButton: this.options.showCopyButton !== false,
         pollingConfig: this.options.pollingConfig || {},
-        organizationId: this.options.organizationId,
-        environmentId: this.options.environmentId,
-        baseUrl: this.options.baseUrl,
       });
     }
   }

@@ -7,6 +7,7 @@ import { PaymentButtonComponent } from "./components/PaymentButtonComponent";
 export class VoltagePayments {
   static create(options: PaymentOptions): PaymentComponent {
     const variant = options.variant || "inline";
+    console.log("options", options);
 
     switch (variant) {
       case "inline":

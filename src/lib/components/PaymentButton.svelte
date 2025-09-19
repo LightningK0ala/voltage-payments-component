@@ -22,6 +22,10 @@
   export let organizationId: string | undefined = undefined;
   export let environmentId: string | undefined = undefined;
   export let baseUrl: string | undefined = undefined;
+  // Taproot Asset props
+  export let assetCurrency: string | undefined = undefined;
+  export let assetAmount: number | undefined = undefined;
+  export let assetLabel: string | undefined = undefined;
 
   // Button-specific state
   let paymentVisible = false;
@@ -151,6 +155,9 @@
         {organizationId}
         {environmentId}
         {baseUrl}
+        {assetCurrency}
+        {assetAmount}
+        {assetLabel}
         on:ready={handleReady}
         on:qrGenerated={handleQRGenerated}
         on:statusChange={handleStatusChange}

@@ -23,6 +23,10 @@
   export let environmentId: string | undefined = undefined;
   export let baseUrl: string | undefined = undefined;
   export let autoClose: boolean = true;
+  // Taproot Asset props
+  export let assetCurrency: string | undefined = undefined;
+  export let assetAmount: number | undefined = undefined;
+  export let assetLabel: string | undefined = undefined;
 
   // Modal-specific state
   let modalOpen = false;
@@ -157,6 +161,9 @@
           {organizationId}
           {environmentId}
           {baseUrl}
+          {assetCurrency}
+          {assetAmount}
+          {assetLabel}
           on:ready={handleReady}
           on:qrGenerated={handleQRGenerated}
           on:statusChange={handleStatusChange}

@@ -1,6 +1,7 @@
 // Main API types for Voltage Payment Components
 
-export type PaymentKind = "bolt11" | "onchain" | "bip21";
+import type { PaymentKind as SdkPaymentKind } from "voltage-api-sdk";
+export type PaymentKind = SdkPaymentKind;
 export type PaymentVariant = "inline" | "modal" | "button";
 export type PaymentTheme = "light" | "dark" | "auto";
 export type PaymentStatus =
@@ -33,10 +34,15 @@ export interface PaymentOptions {
   walletId: string;
 
   // Payment Configuration
-  amount?: number; // Amount in msats, use 0 for "any amount"
+  amount?: number; // BTC amount in msats, use 0 or null for "any amount" (bolt11 only)
   paymentKind?: PaymentKind;
   description?: string;
-  currency?: "btc";
+  currency?: "btc"; // For BTC flows only
+  // Taproot Asset configuration (when paymentKind === 'taprootasset')
+  assetCurrency?: string; // e.g. 'asset:<66-hex>' group key
+  assetAmount?: number; // base units for the asset
+  assetLabel?: string; // optional UI label, e.g., 'VCASH'
+  assetDecimals?: number; // optional number of decimal places (e.g., VCASH = 6)
 
   // UI Configuration
   variant?: PaymentVariant;
