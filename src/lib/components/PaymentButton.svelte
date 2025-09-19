@@ -8,28 +8,51 @@
     PollingConfig,
   } from "../types/index";
 
-  // Props - same as PaymentInline but with button-specific additions
-  export let apiKey: string;
-  export let walletId: string;
-  export let amount: number | null = null;
-  export let paymentKind: PaymentKind = "bip21";
-  export let description: string = "";
-  export let appearance: AppearanceConfig = {};
-  export let theme: "light" | "dark" | "auto" = "auto";
-  export let showQRCode: boolean = true;
-  export let showCopyButton: boolean = true;
-  export let pollingConfig: PollingConfig = {};
-  export let organizationId: string | undefined = undefined;
-  export let environmentId: string | undefined = undefined;
-  export let baseUrl: string | undefined = undefined;
-  // Taproot Asset props
-  export let assetCurrency: string | undefined = undefined;
-  export let assetAmount: number | undefined = undefined;
-  export let assetLabel: string | undefined = undefined;
+  
+  
+  interface Props {
+    // Props - same as PaymentInline but with button-specific additions
+    apiKey: string;
+    walletId: string;
+    amount?: number | null;
+    paymentKind?: PaymentKind;
+    description?: string;
+    appearance?: AppearanceConfig;
+    theme?: "light" | "dark" | "auto";
+    showQRCode?: boolean;
+    showCopyButton?: boolean;
+    pollingConfig?: PollingConfig;
+    organizationId?: string | undefined;
+    environmentId?: string | undefined;
+    baseUrl?: string | undefined;
+    // Taproot Asset props
+    assetCurrency?: string | undefined;
+    assetAmount?: number | undefined;
+    assetLabel?: string | undefined;
+  }
+
+  let {
+    apiKey,
+    walletId,
+    amount = null,
+    paymentKind = "bip21",
+    description = "",
+    appearance = {},
+    theme = "auto",
+    showQRCode = true,
+    showCopyButton = true,
+    pollingConfig = {},
+    organizationId = undefined,
+    environmentId = undefined,
+    baseUrl = undefined,
+    assetCurrency = undefined,
+    assetAmount = undefined,
+    assetLabel = undefined
+  }: Props = $props();
 
   // Button-specific state
-  let paymentVisible = false;
-  let isProcessing = false;
+  let paymentVisible = $state(false);
+  let isProcessing = $state(false);
 
   const dispatch = createEventDispatcher();
 
@@ -78,8 +101,6 @@
     dispatch("expired", event.detail);
   }
 
-  // Get computed styles for the button based on appearance config
-  $: buttonStyles = getButtonStyles(appearance);
 
   function getButtonStyles(appearance: AppearanceConfig) {
     const primaryColor = appearance.primaryColor || "#f7931a";
@@ -92,6 +113,8 @@
       fontFamily,
     };
   }
+  // Get computed styles for the button based on appearance config
+  let buttonStyles = $derived(getButtonStyles(appearance));
 </script>
 
 <div class="voltage-button-payment">
@@ -101,7 +124,7 @@
     class="voltage-payment-button"
     class:active={paymentVisible}
     class:processing={isProcessing}
-    on:click={togglePayment}
+    onclick={togglePayment}
     style="background-color: {buttonStyles.backgroundColor}; border-radius: {buttonStyles.borderRadius}; font-family: {buttonStyles.fontFamily};"
     disabled={isProcessing}
   >

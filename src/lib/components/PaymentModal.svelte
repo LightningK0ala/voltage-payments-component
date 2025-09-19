@@ -8,29 +8,51 @@
     PollingConfig,
   } from "../types/index";
 
-  // Props - same as PaymentInline but with modal-specific additions
-  export let apiKey: string;
-  export let walletId: string;
-  export let amount: number | null = null;
-  export let paymentKind: PaymentKind = "bip21";
-  export let description: string = "";
-  export let appearance: AppearanceConfig = {};
-  export let theme: "light" | "dark" | "auto" = "auto";
-  export let showQRCode: boolean = true;
-  export let showCopyButton: boolean = true;
-  export let pollingConfig: PollingConfig = {};
-  export let organizationId: string | undefined = undefined;
-  export let environmentId: string | undefined = undefined;
-  export let baseUrl: string | undefined = undefined;
-  export let autoClose: boolean = true;
-  // Taproot Asset props
-  export let assetCurrency: string | undefined = undefined;
-  export let assetAmount: number | undefined = undefined;
-  export let assetLabel: string | undefined = undefined;
+  interface Props {
+    // Props - same as PaymentInline but with modal-specific additions
+    apiKey: string;
+    walletId: string;
+    amount?: number | null;
+    paymentKind?: PaymentKind;
+    description?: string;
+    appearance?: AppearanceConfig;
+    theme?: "light" | "dark" | "auto";
+    showQRCode?: boolean;
+    showCopyButton?: boolean;
+    pollingConfig?: PollingConfig;
+    organizationId?: string | undefined;
+    environmentId?: string | undefined;
+    baseUrl?: string | undefined;
+    autoClose?: boolean;
+    // Taproot Asset props
+    assetCurrency?: string | undefined;
+    assetAmount?: number | undefined;
+    assetLabel?: string | undefined;
+  }
+
+  let {
+    apiKey,
+    walletId,
+    amount = null,
+    paymentKind = "bip21",
+    description = "",
+    appearance = {},
+    theme = "auto",
+    showQRCode = true,
+    showCopyButton = true,
+    pollingConfig = {},
+    organizationId = undefined,
+    environmentId = undefined,
+    baseUrl = undefined,
+    autoClose = true,
+    assetCurrency = undefined,
+    assetAmount = undefined,
+    assetLabel = undefined,
+  }: Props = $props();
 
   // Modal-specific state
-  let modalOpen = false;
-  let modalElement: HTMLElement;
+  let modalOpen = $state(false);
+  let modalElement: HTMLElement | undefined = $state();
 
   const dispatch = createEventDispatcher();
 
@@ -99,14 +121,14 @@
   });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if modalOpen}
   <!-- Modal backdrop -->
   <div
     class="voltage-modal-backdrop"
-    on:click={handleBackdropClick}
-    on:keydown={(e) => e.key === "Escape" && close()}
+    onclick={handleBackdropClick}
+    onkeydown={(e) => e.key === "Escape" && close()}
     transition:fade={{ duration: 200 }}
     role="dialog"
     aria-modal="true"
@@ -128,7 +150,7 @@
         <button
           type="button"
           class="voltage-modal-close"
-          on:click={close}
+          onclick={close}
           aria-label="Close payment modal"
         >
           <svg
